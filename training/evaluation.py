@@ -70,7 +70,6 @@ class PencilNetInference:
 
         return pred_img, bboxes
 
-
 # Test iference
 if __name__ == '__main__':
     kernel_builder = KernelBuilder()
