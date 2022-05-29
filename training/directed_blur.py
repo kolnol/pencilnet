@@ -11,8 +11,11 @@ class KernelType(Enum):
 
 
 class DirectedBlurFilter:
-    def apply(self, bgr_img, kernel):
-        return cv2.filter2D(bgr_img, -1, kernel)
+    def __init__(self, kernel):
+        self.kernel = kernel
+
+    def apply(self, bgr_img):
+        return cv2.filter2D(bgr_img, -1, self.kernel)
 
 class KernelBuilder:
     # The greater the size, the more the motion.
@@ -52,22 +55,23 @@ if __name__ == '__main__':
     v_kernel = kernel_builder.custom_rotated_horizontal_kernel(kernel_size, angle_in_degrees=90)
     diag_kernel = kernel_builder.custom_rotated_horizontal_kernel(kernel_size, angle_in_degrees=45)
     random_kernel = kernel_builder.custom_rotated_horizontal_kernel(kernel_size, random_angle=True)
+    
+    kernels = [h_kernel, v_kernel, diag_kernel, random_kernel]
 
     test_img_path = os.path.join('Public_datasets', 'Test data', 'rgb_real_N_40', 'images','000735.png')
     test_img_bgr = cv2.imread(test_img_path)
     
-    directed_blur_filter = DirectedBlurFilter()
-    h_image = directed_blur_filter.apply(test_img_bgr, h_kernel)
-    v_image = directed_blur_filter.apply(test_img_bgr, v_kernel)
-    diag_image = directed_blur_filter.apply(test_img_bgr, diag_kernel)
-    random_image = directed_blur_filter.apply(test_img_bgr, random_kernel)
+    imgs = [test_img_bgr]
+    for kernel in kernels:
+        directed_blur_filter = DirectedBlurFilter(kernel)
+        imgs.append(directed_blur_filter.apply(test_img_bgr))
 
     # Visualize
     # Kernels
-    cv2.imshow('h_kernel', np.concatenate((h_kernel, v_kernel, diag_kernel, random_kernel), axis=1))
+    cv2.imshow('h_kernel', np.concatenate(kernels, axis=1))
 
     # Images
-    cv2.imshow('Blured Images', np.concatenate((test_img_bgr, h_image, v_image, diag_image, random_image), axis=1))
+    cv2.imshow('Blured Images', np.concatenate(imgs, axis=1))
 
     cv2.waitKey(0)
     cv2.destroyAllWindows()
