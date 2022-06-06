@@ -1,0 +1,42 @@
+{
+    "name": "2022-01-22-13-45",
+    "batch_size": 32,
+    "input_shape": [
+        120,
+        160,
+        3
+    ],
+    "output_shape": [
+        3,
+        4,
+        5
+    ],
+    "epochs": 800,
+    "base_learning_rate": 0.001,
+    "lr_schedule": [
+        [
+            0.1,
+            5
+        ],
+        [
+            0.01,
+            8
+        ]
+    ],
+    "l2_weight_decay": 0.0002,
+    "batch_norm_decay": 0.997,
+    "batch_norm_epsilon": 1e-05,
+    "optimizer": "adam",
+    "loss": "custom",
+    "dataset_folder": "/home/ilkerbozcan/repos/DATASET/pencil_sim_all_130_no_roll",
+    "train_indices": "/home/ilkerbozcan/repos/DATASET/pencil_sim_all_130_no_roll/train-indices.npy",
+    "test_indices": "/home/ilkerbozcan/repos/DATASET/pencil_sim_all_130_no_roll/test-indices.npy",
+    "tensorboard_log_dir": "logs/fit/2022-01-22-13-45",
+    "save_frequency": 10,
+    "info": "au-dr, epoch 100  rmsprop and USE my_loss_2_2 and lr 0.001",
+    "metrics": [
+        "gate_center_mae_error",
+        "distance_mae_error",
+        "orientation_mae_error"
+    ]
+}

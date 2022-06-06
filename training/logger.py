@@ -149,23 +149,27 @@ class Logger:
 
             # Load model.
             sys.path.append(path_to_directory)
-            from network import network_architecture
-            self.model = network_architecture(self.config)
+            from networks import PencilNet
+            self.model = PencilNet(self.config)
 
             # Load loss.
-            from loss import loss
-            self.loss = loss
+            from losses import multi_grid_loss
+            self.loss = multi_grid_loss
 
     def list_checkpoints(self):
         checkpoints_path = os.path.join(self.path, "weights")
         onlyfiles = [f for f in os.listdir(checkpoints_path) if os.path.isfile(os.path.join(checkpoints_path, f))]
-        onlyfiles.sort()
+        onlyfiles = sorted(onlyfiles, key=lambda s: int(s.split('-')[-1].replace('.h5', '')))
         print("[ INFO ] Logger: list_checkpoints: {} checkpoints are found.".format(len(onlyfiles)))
         for i in onlyfiles:
             print("[ INFO ] Logger: list_checkpoints: {}".format(i)) 
+        return onlyfiles
 
     def load_checkpoint(self, epoch, verbose=1):
-        weight_path = os.path.join(self.path, "weights", "model_"+self.config['name']+"_-{epoch:02d}.h5".format(epoch=epoch))
+        weight_path = os.path.join(self.path, "weights", epoch)
+        
+        tf.compat.v1.enable_eager_execution()
+        self.model.make_predict_function()
         self.model.load_weights(weight_path)
         if verbose: 
             print("[ INFO ]: Logger.load_checkpoint: Checkpoint loaded: {}".format(weight_path))
